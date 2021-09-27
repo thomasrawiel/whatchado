@@ -1,7 +1,4 @@
 <?php
-if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
-}
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Whatchado',
@@ -11,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'thomas.rawiel@gmail.com',
     'state' => 'beta',
     'clearCacheOnLoad' => 0,
-    'version' => '1.0.0',
+    'version' => '1.0.2',
     'constraints' => [
         'depends' => [],
         'conflicts' => [],
