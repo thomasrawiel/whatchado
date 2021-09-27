@@ -1,0 +1,30 @@
+{
+  "name": "traw/whatchado",
+  "description": "Embed Whatchado Videos in TYPO3",
+  "type": "typo3-cms-extension",
+  "keywords": [
+    "TYPO3 CMS",
+    "Whatchado"
+  ],
+  "authors": [
+    {
+      "name": "Thomas Rawiel",
+      "role": "Developer"
+    }
+  ],
+  "license": "GPL-3.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "TRAW\\Whatchado\\": "Classes/"
+    }
+  },
+  "require": {
+    "typo3/cms-core": "^10.4",
+    "typo3/cms-seo": "^10.4"
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "whatchado"
+    }
+  }
+}
