@@ -10,7 +10,8 @@ use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperRegistry;
 use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
 
 /**
- *
+ * Class WhatchadoRenderer
+ * @package TRAW\Whatchado\Resource\Rendering
  */
 class WhatchadoRenderer implements FileRendererInterface
 {
@@ -77,10 +78,10 @@ class WhatchadoRenderer implements FileRendererInterface
         }
 
         return sprintf(
-            'https://www.whatchado.com/%s/embeds/videos/%s?%s',
+            'https://www.whatchado.com/%s/embeds/videos/%s%s',
             $language,
             rawurlencode($videoId),
-            implode('&', $urlParams)
+            '?'.implode('&', $urlParams)
         );
     }
 
