@@ -1,0 +1,4 @@
+# cat=basic/enable/010; type=string; label= Whatchado API Key
+whatchadoApiKey =
+# cat=basic/enable/010; type=string; label= Whatchado API URL
+whatchadoApiUrl = https://whatchado.com/api2/videostories/
