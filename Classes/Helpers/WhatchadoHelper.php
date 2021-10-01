@@ -64,14 +64,10 @@ class WhatchadoHelper extends AbstractOnlineMediaHelper
         $temporaryFileName = $this->getTempFolderPath() . 'whatchado_' . md5($videoId) . '.jpg';
 
         if (!file_exists($temporaryFileName)) {
-            $tryNames = ['maxresdefault.jpg', 'mqdefault.jpg', '0.jpg'];
-            foreach ($tryNames as $tryName) {
-                $previewImage = GeneralUtility::getUrl($meta['previewImage']);
-                if ($previewImage !== false) {
-                    file_put_contents($temporaryFileName, $previewImage);
-                    GeneralUtility::fixPermissions($temporaryFileName);
-                    break;
-                }
+            $previewImage = GeneralUtility::getUrl($meta['previewImage']);
+            if ($previewImage !== false) {
+                file_put_contents($temporaryFileName, $previewImage);
+                GeneralUtility::fixPermissions($temporaryFileName);
             }
         }
 
