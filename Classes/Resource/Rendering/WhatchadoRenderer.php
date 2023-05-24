@@ -2,12 +2,14 @@
 
 namespace TRAW\Whatchado\Resource\Rendering;
 
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperInterface;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperRegistry;
 use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class WhatchadoRenderer
@@ -114,7 +116,7 @@ class WhatchadoRenderer implements FileRendererInterface
                 $orgFile = $orgFile->getOriginalFile();
             }
             if ($orgFile instanceof File) {
-                $this->onlineMediaHelper = OnlineMediaHelperRegistry::getInstance()->getOnlineMediaHelper($orgFile);
+                $this->onlineMediaHelper = GeneralUtility::makeInstance(OnlineMediaHelperRegistry::class)->getOnlineMediaHelper($orgFile);
             } else {
                 $this->onlineMediaHelper = false;
             }
@@ -147,7 +149,7 @@ class WhatchadoRenderer implements FileRendererInterface
         if ((int)$height > 0) {
             $attributes['height'] = (int)$height;
         }
-        if (isset($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE']) && (isset($GLOBALS['TSFE']->config['config']['doctype']) && $GLOBALS['TSFE']->config['config']['doctype'] !== 'html5')) {
+        if ($this->shouldIncludeFrameBorderAttribute()) {
             $attributes['frameborder'] = 0;
         }
         foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'poster', 'preload', 'allow'] as $key) {
@@ -157,6 +159,11 @@ class WhatchadoRenderer implements FileRendererInterface
         }
 
         return $attributes;
+    }
+
+    protected function shouldIncludeFrameBorderAttribute(): bool
+    {
+        return GeneralUtility::makeInstance(PageRenderer::class)->getDocType()->shouldIncludeFrameBorderAttribute();
     }
 
     /**
