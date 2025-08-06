@@ -1,6 +1,7 @@
 <?php
-defined('TYPO3') or die('Access denied.');
-call_user_func(function () {
+
+defined('TYPO3') || die('Access denied.');
+call_user_func(function (): void {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['onlineMediaHelpers']['whatchado']
         = \TRAW\Whatchado\Helpers\WhatchadoHelper::class;
     $rendererRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Rendering\RendererRegistry::class);

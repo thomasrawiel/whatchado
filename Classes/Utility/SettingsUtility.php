@@ -7,17 +7,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SettingsUtility
- * @package TRAW\Whatchado\Utility
  */
 class SettingsUtility
 {
-
     /**
-     * @return mixed
      * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException
      * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException
      */
-    public static function getExtensionSettings()
+    public static function getExtensionSettings(): mixed
     {
         return GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get('whatchado');

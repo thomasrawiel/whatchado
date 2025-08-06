@@ -13,7 +13,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class WhatchadoRenderer
- * @package TRAW\Whatchado\Resource\Rendering
  */
 class WhatchadoRenderer implements FileRendererInterface
 {
@@ -22,32 +21,23 @@ class WhatchadoRenderer implements FileRendererInterface
      */
     protected $onlineMediaHelper;
 
-    /**
-     * @return int
-     */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 1;
     }
 
-    /**
-     * @param FileInterface $file
-     * @return bool
-     */
-    public function canRender(FileInterface $file)
+    public function canRender(FileInterface $file): bool
     {
         return ($file->getMimeType() === 'video/whatchado' || $file->getExtension() === 'whatchado') && $this->getOnlineMediaHelper($file) !== false;
     }
 
     /**
-     * @param FileInterface $file
      * @param int|string $width
      * @param int|string $height
-     * @param array $options
      * @param false $usedPathsRelativeToCurrentScript
      * @return string|void
      */
-    public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false)
+    public function render(FileInterface $file, $width, $height, array $options = []): string
     {
         $options = $this->collectOptions($options, $file);
         $src = $this->createWhatchadoUrl($options, $file);
@@ -60,13 +50,7 @@ class WhatchadoRenderer implements FileRendererInterface
         );
     }
 
-
-    /**
-     * @param array $options
-     * @param FileInterface $file
-     * @return string
-     */
-    protected function createWhatchadoUrl(array $options, FileInterface $file)
+    protected function createWhatchadoUrl(array $options, FileInterface $file): string
     {
         $fileContent = explode('|', $this->getVideoIdFromFile($file));
         $videoId = $fileContent[0];
@@ -83,21 +67,16 @@ class WhatchadoRenderer implements FileRendererInterface
             'https://www.whatchado.com/%s/embeds/videos/%s%s',
             $language,
             rawurlencode($videoId),
-            '?'.implode('&', $urlParams)
+            '?' . implode('&', $urlParams)
         );
     }
 
     /**
-     * @param FileInterface $file
      * @return string
      */
     protected function getVideoIdFromFile(FileInterface $file)
     {
-        if ($file instanceof FileReference) {
-            $orgFile = $file->getOriginalFile();
-        } else {
-            $orgFile = $file;
-        }
+        $orgFile = $file instanceof FileReference ? $file->getOriginalFile() : $file;
 
         return $this->getOnlineMediaHelper($file)->getOnlineMediaId($orgFile);
     }
@@ -105,7 +84,6 @@ class WhatchadoRenderer implements FileRendererInterface
     /**
      * Get online media helper
      *
-     * @param FileInterface $file
      * @return bool|OnlineMediaHelperInterface
      */
     protected function getOnlineMediaHelper(FileInterface $file)
@@ -115,22 +93,23 @@ class WhatchadoRenderer implements FileRendererInterface
             if ($orgFile instanceof FileReference) {
                 $orgFile = $orgFile->getOriginalFile();
             }
+
             if ($orgFile instanceof File) {
                 $this->onlineMediaHelper = GeneralUtility::makeInstance(OnlineMediaHelperRegistry::class)->getOnlineMediaHelper($orgFile);
             } else {
                 $this->onlineMediaHelper = false;
             }
         }
+
         return $this->onlineMediaHelper;
     }
 
     /**
      * @param int|string $width
      * @param int|string $height
-     * @param array $options
      * @return array pairs of key/value; not yet html-escaped
      */
-    protected function collectIframeAttributes($width, $height, array $options)
+    protected function collectIframeAttributes($width, $height, array $options): array
     {
         $attributes = [];
         $attributes['allowfullscreen'] = true;
@@ -138,20 +117,25 @@ class WhatchadoRenderer implements FileRendererInterface
         if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
             $attributes = array_merge($attributes, $options['additionalAttributes']);
         }
+
         if (isset($options['data']) && is_array($options['data'])) {
-            array_walk($options['data'], function (&$value, $key) use (&$attributes) {
+            array_walk($options['data'], function (&$value, string $key) use (&$attributes): void {
                 $attributes['data-' . $key] = $value;
             });
         }
+
         if ((int)$width > 0) {
             $attributes['width'] = (int)$width;
         }
+
         if ((int)$height > 0) {
             $attributes['height'] = (int)$height;
         }
+
         if ($this->shouldIncludeFrameBorderAttribute()) {
             $attributes['frameborder'] = 0;
         }
+
         foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'poster', 'preload', 'allow'] as $key) {
             if (!empty($options[$key])) {
                 $attributes[$key] = $options[$key];
@@ -167,8 +151,6 @@ class WhatchadoRenderer implements FileRendererInterface
     }
 
     /**
-     * @param array $attributes
-     * @return string
      * @internal
      */
     protected function implodeAttributes(array $attributes): string
@@ -176,21 +158,13 @@ class WhatchadoRenderer implements FileRendererInterface
         $attributeList = [];
         foreach ($attributes as $name => $value) {
             $name = preg_replace('/[^\p{L}0-9_.-]/u', '', $name);
-            if ($value === true) {
-                $attributeList[] = $name;
-            } else {
-                $attributeList[] = $name . '="' . htmlspecialchars($value, ENT_QUOTES | ENT_HTML5) . '"';
-            }
+            $attributeList[] = $value === true ? $name : $name . '="' . htmlspecialchars((string)$value, ENT_QUOTES | ENT_HTML5) . '"';
         }
+
         return implode(' ', $attributeList);
     }
 
-    /**
-     * @param array $options
-     * @param FileInterface $file
-     * @return array
-     */
-    protected function collectOptions(array $options, FileInterface $file)
+    protected function collectOptions(array $options, FileInterface $file): array
     {
         if (!isset($options['autoplay']) && $file instanceof FileReference) {
             $autoplay = $file->getProperty('autoplay');
