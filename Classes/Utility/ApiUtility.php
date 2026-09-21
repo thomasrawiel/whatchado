@@ -58,7 +58,7 @@ class ApiUtility implements SingletonInterface
     /**
      * @return string|null
      */
-    protected function makeGetRequest(string $targetUrl)
+    protected function makeGetRequest(string $targetUrl): ?string
     {
         $additionalOptions = [
             'headers' => ['Cache-Control' => 'no-cache'],

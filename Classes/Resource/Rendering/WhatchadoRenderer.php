@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperInterface;
 use TYPO3\CMS\Core\Resource\OnlineMedia\Helpers\OnlineMediaHelperRegistry;
 use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
+use TYPO3\CMS\Core\Type\DocType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -17,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class WhatchadoRenderer implements FileRendererInterface
 {
     /**
-     * @var OnlineMediaHelperInterface
+     * @var OnlineMediaHelperInterface|false
      */
     protected $onlineMediaHelper;
 
@@ -93,14 +94,12 @@ class WhatchadoRenderer implements FileRendererInterface
             if ($orgFile instanceof FileReference) {
                 $orgFile = $orgFile->getOriginalFile();
             }
-
             if ($orgFile instanceof File) {
                 $this->onlineMediaHelper = GeneralUtility::makeInstance(OnlineMediaHelperRegistry::class)->getOnlineMediaHelper($orgFile);
             } else {
                 $this->onlineMediaHelper = false;
             }
         }
-
         return $this->onlineMediaHelper;
     }
 
@@ -117,37 +116,34 @@ class WhatchadoRenderer implements FileRendererInterface
         if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
             $attributes = array_merge($attributes, $options['additionalAttributes']);
         }
-
         if (isset($options['data']) && is_array($options['data'])) {
-            array_walk($options['data'], function (&$value, string $key) use (&$attributes): void {
+            array_walk(
+                $options['data'],
+                static function (string $value, string|int $key) use (&$attributes): void {
                 $attributes['data-' . $key] = $value;
-            });
         }
-
+            );
+        }
         if ((int)$width > 0) {
             $attributes['width'] = (int)$width;
         }
-
         if ((int)$height > 0) {
             $attributes['height'] = (int)$height;
         }
-
         if ($this->shouldIncludeFrameBorderAttribute()) {
             $attributes['frameborder'] = 0;
         }
-
-        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'poster', 'preload', 'allow'] as $key) {
+        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'allow'] as $key) {
             if (!empty($options[$key])) {
                 $attributes[$key] = $options[$key];
             }
         }
-
         return $attributes;
     }
 
     protected function shouldIncludeFrameBorderAttribute(): bool
     {
-        return GeneralUtility::makeInstance(PageRenderer::class)->getDocType()->shouldIncludeFrameBorderAttribute();
+        return DocType::createFromRequest($GLOBALS['TYPO3_REQUEST'] ?? null)->shouldIncludeFrameBorderAttribute();
     }
 
     /**

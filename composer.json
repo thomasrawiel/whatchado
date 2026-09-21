@@ -1,6 +1,6 @@
 {
   "name": "traw/whatchado",
-  "description": "Embed Whatchado Videos in TYPO3",
+  "description": "Whatchado - Embed Whatchado Videos in TYPO3",
   "type": "typo3-cms-extension",
   "keywords": [
     "TYPO3 CMS",
@@ -19,11 +19,15 @@
     }
   },
   "require": {
-    "typo3/cms-core": "^12 || ^13"
+    "typo3/cms-core": "^14.3"
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "whatchado"
+      "extension-key": "whatchado",
+      "version": "3.0.0-stable",
+      "Package": {
+        "providesPackages": {}
+      }
     }
   }
 }
